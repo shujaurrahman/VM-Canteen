@@ -1,0 +1,113 @@
+{
+    "Shuja": [
+        {
+            "date": "2024-08-20 22:14:02",
+            "items": {
+                "chai": {
+                    "quantity": "3",
+                    "price": "10"
+                },
+                "cutting-chai": {
+                    "quantity": "0",
+                    "price": "5"
+                },
+                "samosa": {
+                    "quantity": "3",
+                    "price": "10"
+                },
+                "meetha_samosa": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "bread_pakora": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "egg_bread": {
+                    "quantity": "0",
+                    "price": "25"
+                },
+                "poori_sabzi": {
+                    "quantity": "0",
+                    "price": "30"
+                },
+                "parantha": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "cigarette": {
+                    "quantity": "1",
+                    "price": "18"
+                },
+                "sahi_toast": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "gulab_jamun": {
+                    "quantity": "0",
+                    "price": "15"
+                }
+            },
+            "total": 78,
+            "paid": 0,
+            "remaining": 78,
+            "payments": []
+        },
+        {
+            "date": "2024-08-20 22:14:09",
+            "items": {
+                "chai": {
+                    "quantity": "0",
+                    "price": "10"
+                },
+                "cutting-chai": {
+                    "quantity": "2",
+                    "price": "5"
+                },
+                "samosa": {
+                    "quantity": "0",
+                    "price": "10"
+                },
+                "meetha_samosa": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "bread_pakora": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "egg_bread": {
+                    "quantity": "0",
+                    "price": "25"
+                },
+                "poori_sabzi": {
+                    "quantity": "0",
+                    "price": "30"
+                },
+                "parantha": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "cigarette": {
+                    "quantity": "0",
+                    "price": "18"
+                },
+                "sahi_toast": {
+                    "quantity": "0",
+                    "price": "15"
+                },
+                "gulab_jamun": {
+                    "quantity": "0",
+                    "price": "15"
+                }
+            },
+            "total": 10,
+            "paid": 0,
+            "remaining": 10,
+            "payments": []
+        }
+    ],
+    "Yusuf": [],
+    "Faizan": [],
+    "Farhan": []
+}
