@@ -136,252 +136,369 @@ foreach ($bills as $person => $personBills) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canteen Dashboard</title>
     <style>
-        :root {
-            --primary: rgba(135, 100, 255, .9);
-            --background: #f9f9f9;
-            --card-background: #ffffff;
-            --text-color: #333;
-            --border-color: #ddd;
-        }
+    :root {
+        --primary: rgba(135, 100, 255, .9);
+        --background: #f9f9f9;
+        --card-background: #ffffff;
+        --text-color: #333;
+        --border-color: #ddd;
+    }
 
+    body {
+        font-family: Arial, sans-serif;
+        background-color: var(--background);
+        margin: 0;
+        font-size: 18px;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        background: var(--card-background);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 28px;
+        color: var(--text-color);
+    }
+
+    .button {
+        background-color: var(--primary);
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .button:hover {
+        background-color: rgba(135, 100, 255, .7);
+    }
+
+    .logout-btn {
+        background-color: var(--primary);
+        color: white;
+        text-align: right;
+        margin-top: 0;
+    }
+
+    .add-bill-container {
+        display: none;
+    }
+
+    .add-bill-container,
+    .bill {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 25px;
+        background-color: var(--card-background);
+        padding: 20px;
+    }
+
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .item-row label {
+        flex: 1;
+        color: var(--text-color);
+    }
+
+    .item-row select,
+    .item-row input {
+        flex: 0 0 10%;
+        text-align: center;
+    }
+
+    .bill h3 {
+        margin: 0;
+        margin-bottom: 8px;
+        color: var(--text-color);
+    }
+
+    .bill-details {
+        margin-bottom: 8px;
+    }
+
+    .bill-total,
+    .bill p {
+        margin: 0;
+        color: var(--text-color);
+    }
+
+    .pay-bill-container input[type="number"] {
+        width: 80px;
+        margin-right: 10px;
+    }
+
+    .delete-button {
+        color: var(--primary);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .delete-button:hover {
+        text-decoration: underline;
+    }
+
+    .add-person-container,
+    .remove-person-container {
+        margin-top: 20px;
+    }
+
+    .add-person-container input[type="text"],
+    .remove-person-container select {
+        padding: 5px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+    }
+
+    .add-person-container button,
+    .remove-person-container button {
+        background-color: var(--primary);
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .remove-person-container button {
+        background-color: red;
+    }
+
+    .remove-person-container button:hover {
+        background-color: darkred;
+    }
+
+    select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        font-size: var(--font-size-large);
+        color: var(--text-color);
+        background-color: var(--card-background);
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    select:focus {
+        border-color: var(--primary);
+        background-color: rgba(135, 100, 255, 0.1);
+        outline: none;
+    }
+
+    label {
+        font-size: var(--font-size-large);
+        color: var(--text-color);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .bill {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 25px;
+        background-color: var(--card-background);
+        padding: 20px;
+        line-height: 1.6;
+    }
+
+    .bill-title {
+        margin: 0 0 12px;
+        font-size: 22px;
+        color: var(--text-color);
+    }
+
+    .bill-details {
+        margin-bottom: 12px;
+    }
+
+    .bill-items-title {
+        margin-bottom: 8px;
+        font-size: 18px;
+        color: var(--text-color);
+    }
+
+    .bill-items p {
+        margin: 4px 0;
+        padding-left: 10px;
+        border-left: 3px solid var(--primary);
+        font-size: 16px;
+        color: var(--text-color);
+    }
+
+    .bill-total,
+    .bill-payment-status {
+        margin: 8px 0;
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--text-color);
+    }
+
+    .bill-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .bill-actions .pay-bill-container input[type="number"] {
+        width: 100px;
+        padding: 5px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+    }
+
+    .bill-actions .pay-bill-container .button {
+        padding: 8px 16px;
+        margin-left: 10px;
+        font-size: 16px;
+    }
+
+    .bill-actions .delete-button {
+        font-size: 16px;
+        color: red;
+    }
+
+    .bill-actions .delete-button:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive styling for small screens */
+    @media (max-width: 768px) {
         body {
-            font-family: Arial, sans-serif;
-            background-color: var(--background);
-            margin: 0;
-            font-size: 18px;
-            padding: 20px;
+            font-size: 16px;
+            padding: 10px;
         }
 
         .container {
-            max-width: 1000px;
-            margin: auto;
-            background: var(--card-background);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
         }
 
         h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 28px;
-            color: var(--text-color);
+            font-size: 24px;
         }
 
         .button {
-            background-color: var(--primary);
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .button:hover {
-            background-color: rgba(135, 100, 255, .7);
-        }
-
-        .logout-btn {
-            background-color: var(--primary);
-            color: white;
-            text-align: right;
-            margin-top: 0;
-        }
-
-        .add-bill-container {
-            display: none;
-        }
-
-        .add-bill-container,
-        .bill {
-
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin-bottom: 25px;
-            background-color: var(--card-background);
-            padding: 20px;
-        }
-
-        .item-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-
-        .item-row label {
-            flex: 1;
-            color: var(--text-color);
-        }
-
-        .item-row select,
-        .item-row input {
-            flex: 0 0 10%;
-            text-align: center;
-        }
-
-        .bill h3 {
-            margin: 0;
-            margin-bottom: 8px;
-            color: var(--text-color);
-        }
-
-        .bill-details {
-            margin-bottom: 8px;
-        }
-
-        .bill-total,
-        .bill p {
-            margin: 0;
-            color: var(--text-color);
-        }
-
-        .pay-bill-container input[type="number"] {
-            width: 80px;
-            margin-right: 10px;
-        }
-
-        .delete-button {
-            color: var(--primary);
-            background: none;
-            border: none;
-            cursor: pointer;
+            padding: 6px 10px;
             font-size: 16px;
-        }
-
-        .delete-button:hover {
-            text-decoration: underline;
-        }
-
-        .add-person-container,
-        .remove-person-container {
-            margin-top: 20px;
-        }
-
-        .add-person-container input[type="text"],
-        .remove-person-container select {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .add-person-container button,
-        .remove-person-container button {
-            background-color: var(--primary);
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .remove-person-container button {
-            background-color: red;
-        }
-
-        .remove-person-container button:hover {
-            background-color: darkred;
-        }
-
-        /* Style for the select element */
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            font-size: var(--font-size-large);
-            color: var(--text-color);
-            background-color: var(--card-background);
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-        }
-
-        select:focus {
-            border-color: var(--primary);
-            background-color: rgba(135, 100, 255, 0.1);
-            outline: none;
-        }
-
-        /* Style for the label */
-        label {
-            font-size: var(--font-size-large);
-            color: var(--text-color);
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .bill {
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin-bottom: 25px;
-            background-color: var(--card-background);
-            padding: 20px;
-            line-height: 1.6;
         }
 
         .bill-title {
-            margin: 0 0 12px;
-            font-size: 22px;
-            color: var(--text-color);
-        }
-
-        .bill-details {
-            margin-bottom: 12px;
-        }
-
-        .bill-items-title {
-            margin-bottom: 8px;
-            font-size: 18px;
-            color: var(--text-color);
+            font-size: 20px;
         }
 
         .bill-items p {
-            margin: 4px 0;
-            padding-left: 10px;
-            border-left: 3px solid var(--primary);
-            font-size: 16px;
-            color: var(--text-color);
+            font-size: 14px;
         }
 
         .bill-total,
         .bill-payment-status {
-            margin: 8px 0;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--text-color);
+            font-size: 16px;
         }
 
-        .bill-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
+        select {
+            padding: 8px;
+            font-size: 16px;
         }
 
         .bill-actions .pay-bill-container input[type="number"] {
-            width: 100px;
-            padding: 5px;
-            font-size: 16px;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
+            width: 70px;
+            padding: 4px;
+            font-size: 14px;
         }
 
         .bill-actions .pay-bill-container .button {
-            padding: 8px 16px;
-            margin-left: 10px;
-            font-size: 16px;
+            padding: 6px 12px;
+            font-size: 14px;
         }
 
-        .bill-actions .delete-button {
-            font-size: 16px;
-            color: red;
+        .item-row select,
+        .item-row input {
+            flex: 0 0 20%;
+            font-size: 14px;
         }
 
-        .bill-actions .delete-button:hover {
-            text-decoration: underline;
+        .item-row label {
+            font-size: 16px;
         }
-    </style>
+    }
+
+    /* Further adjustments for very small screens */
+    @media (max-width: 480px) {
+        body {
+            font-size: 14px;
+        }
+
+        .container {
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 20px;
+        }
+
+        .button {
+            padding: 5px 8px;
+            font-size: 14px;
+        }
+
+        .bill-title {
+            font-size: 18px;
+        }
+
+        .bill-items p {
+            font-size: 12px;
+        }
+
+        .bill-total,
+        .bill-payment-status {
+            font-size: 14px;
+        }
+
+        select {
+            padding: 4px;
+            font-size: 14px;
+        }
+
+        .bill-actions .pay-bill-container input[type="number"] {
+            width: 60px;
+            padding: 3px;
+            font-size: 12px;
+        }
+
+        .bill-actions .pay-bill-container .button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .item-row select,
+        .item-row input {
+            flex: 0 0 30%;
+            font-size: 12px;
+        }
+
+        .item-row label {
+            font-size: 14px;
+        }
+    }
+</style>
+
 </head>
 
 <body>
