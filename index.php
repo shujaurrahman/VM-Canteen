@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 20px;
         }
 
         .form.login {
@@ -38,7 +39,7 @@
         }
 
         .inputLogin {
-            width: 93%;
+            width: 100%;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
@@ -115,6 +116,39 @@
 
         .links:hover {
             color: rgba(135, 100, 255, 0.8);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .form.login {
+                padding: 15px;
+            }
+
+            .inputLogin {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .labelLogin {
+                font-size: 14px;
+            }
+
+            #login h1 {
+                font-size: 20px;
+            }
+
+            .submitButton {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .error-text {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
