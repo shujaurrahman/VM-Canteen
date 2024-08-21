@@ -126,6 +126,26 @@ foreach ($bills as $person => $personBills) {
     }
     $personTotals[$person] = $totalAmount;
 }
+// Handle marking bill as paid
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['mark_as_paid'])) {
+    $person = $_POST['person'];
+    $billIndex = $_POST['bill_index'];
+
+    if (isset($bills[$person][$billIndex])) {
+        $totalAmount = $bills[$person][$billIndex]['total'];
+        $bills[$person][$billIndex]['paid'] = $totalAmount;
+        $bills[$person][$billIndex]['remaining'] = 0;
+
+        // Record payment date and amount
+        $bills[$person][$billIndex]['payments'][] = [
+            'date' => date('Y-m-d h:i:s a'),
+            'amount' => $totalAmount
+        ];
+
+        saveBill($bills);
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -509,7 +529,10 @@ foreach ($bills as $person => $personBills) {
             <input type="hidden" name="logout" value="1">
             <button type="submit" class="button logout-btn">Logout</button>
         </form>
-
+        <!-- New section for UPI payment -->
+        <div class="upi-payment-info" style="margin-bottom: 20px;">
+            <p><strong>Canteen UPI ID:</strong> paytmqriyfgmimrkp@paytm</p>
+        </div>
         <button class="button" onclick="toggleAddBill()">Add Bill</button>
         <div class="add-bill-container">
             <form action="dashboard.php" method="POST">
@@ -556,72 +579,107 @@ foreach ($bills as $person => $personBills) {
                 <p>No bills found for <?php echo $person; ?>.</p>
             <?php else: ?>
                 <?php foreach ($personBills as $index => $bill): ?>
-                    <div class="bill">
-                        <h3>Bill #<?php echo $index + 1; ?> - Date: <?php echo date('d-m-Y h:i:s a', strtotime($bill['date'])); ?>
-                        </h3>
-                        <div class="bill-details">
-                            <p><strong>Items:</strong></p>
-                            <?php foreach ($bill['items'] as $item => $details): ?>
-                                <?php if ($details['quantity'] > 0): ?>
-                                    <p><?php echo ucfirst(str_replace('_', ' ', $item)); ?>: <?php echo $details['quantity']; ?> x
-                                        ₹<?php echo $details['price']; ?> = ₹<?php echo $details['quantity'] * $details['price']; ?></p>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </div>
-                        <p class="bill-total">Total: ₹<?php echo $bill['total']; ?></p>
-                        <p>Paid: ₹<?php echo $bill['paid']; ?> | Remaining: ₹<?php echo $bill['remaining']; ?></p>
-                        <form action="dashboard.php" method="POST" class="pay-bill-container">
-                            <input type="hidden" name="pay_bill" value="1">
-                            <input type="hidden" name="person" value="<?php echo $person; ?>">
-                            <input type="hidden" name="bill_index" value="<?php echo $index; ?>">
-                            <input type="number" name="amount_paid" min="0" max="<?php echo $bill['remaining']; ?>" required>
-                            <button type="submit" class="button">Pay</button>
-                        </form>
-                        <?php if (!empty($bill['payments'])): ?>
-                            <h4>Payment History:</h4>
-                            <ul>
-                                <?php foreach ($bill['payments'] as $payment): ?>
-                                    <li>₹<?php echo $payment['amount']; ?> on
-                                        <?php echo date('d-m-Y h:i:s a', strtotime($payment['date'])); ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        <?php endif; ?>
-                        <form action="dashboard.php" method="POST" style="display:inline;">
-                            <input type="hidden" name="delete_bill" value="1">
-                            <input type="hidden" name="person" value="<?php echo $person; ?>">
-                            <input type="hidden" name="bill_index" value="<?php echo $index; ?>">
-                            <button type="submit" class="delete-button">Delete Bill</button>
-                        </form>
-                    </div>
+    <div class="bill">
+        <h3>Bill #<?php echo $index + 1; ?> - Date: <?php echo date('d-m-Y h:i:s a', strtotime($bill['date'])); ?>
+        </h3>
+        <div class="bill-details">
+            <p><strong>Items:</strong></p>
+            <?php foreach ($bill['items'] as $item => $details): ?>
+                <?php if ($details['quantity'] > 0): ?>
+                    <p><?php echo ucfirst(str_replace('_', ' ', $item)); ?>: <?php echo $details['quantity']; ?> x
+                        ₹<?php echo $details['price']; ?> = ₹<?php echo $details['quantity'] * $details['price']; ?></p>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+        <p class="bill-total">Total: ₹<?php echo $bill['total']; ?></p>
+        <p>Paid: ₹<?php echo $bill['paid']; ?> | Remaining: ₹<?php echo $bill['remaining']; ?></p>
+        <form action="dashboard.php" method="POST" class="pay-bill-container">
+            <input type="hidden" name="pay_bill" value="1">
+            <input type="hidden" name="person" value="<?php echo $person; ?>">
+            <input type="hidden" name="bill_index" value="<?php echo $index; ?>">
+            <input type="number" name="amount_paid" min="0" max="<?php echo $bill['remaining']; ?>" required>
+            <button type="submit" class="button">Pay</button>
+        </form>
+        <?php if (!empty($bill['payments'])): ?>
+            <h4>Payment History:</h4>
+            <ul>
+                <?php foreach ($bill['payments'] as $payment): ?>
+                    <li>₹<?php echo $payment['amount']; ?> on
+                        <?php echo date('d-m-Y h:i:s a', strtotime($payment['date'])); ?></li>
                 <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+        <form action="dashboard.php" method="POST" style="display:inline;" id="mark-as-paid-form-<?php echo $index; ?>">
+    <input type="hidden" name="mark_as_paid" value="1">
+    <input type="hidden" name="person" value="<?php echo $person; ?>">
+    <input type="hidden" name="bill_index" value="<?php echo $index; ?>">
+    <button type="submit" class="button mark-as-paid-button" <?php if ($bill['remaining'] <= 0) echo 'disabled'; ?>>
+        <?php echo $bill['remaining'] <= 0 ? 'Already Paid' : 'Mark as Paid'; ?>
+    </button>
+</form>
+
+        <form action="dashboard.php" method="POST" style="display:inline;">
+            <input type="hidden" name="delete_bill" value="1">
+            <input type="hidden" name="person" value="<?php echo $person; ?>">
+            <input type="hidden" name="bill_index" value="<?php echo $index; ?>">
+            <button type="submit" class="delete-button">Delete Bill</button>
+        </form>
+    </div>
+<?php endforeach; ?>
+
             <?php endif; ?>
         <?php endforeach; ?>
     </div>
     <script>
-        function toggleAddBill() {
-            var container = document.querySelector('.add-bill-container');
-            container.style.display = (container.style.display === 'none') ? 'block' : 'none';
-        }
+    function toggleAddBill() {
+        var container = document.querySelector('.add-bill-container');
+        container.style.display = (container.style.display === 'none') ? 'block' : 'none';
+    }
 
-        function validateAddBillForm() {
-            var items = document.querySelectorAll('select[name^="items["]');
-            var valid = false;
+    function validateAddBillForm() {
+        var items = document.querySelectorAll('select[name^="items["]');
+        var valid = false;
 
-            items.forEach(function (select) {
-                if (parseInt(select.value) > 0) {
-                    valid = true;
-                }
-            });
-
-            if (!valid) {
-                alert('Select at least one item');
-                return false; // Prevent form submission
+        items.forEach(function (select) {
+            if (parseInt(select.value) > 0) {
+                valid = true;
             }
-            return true; // Allow form submission
-        }
+        });
 
-        // Attach validation function to form
-        document.querySelector('.add-bill-container form').onsubmit = validateAddBillForm;
+        if (!valid) {
+            alert('Select at least one item');
+            return false; // Prevent form submission
+        }
+        return true; // Allow form submission
+    }
+
+    document.querySelectorAll('.bill').forEach(function (billElement) {
+        var remainingAmount = parseFloat(billElement.querySelector('.bill p:nth-of-type(2)').textContent.replace('Remaining: ₹', ''));
+        var markAsPaidButton = billElement.querySelector('form[id^="mark-as-paid-form-"] .mark-as-paid-button');
+
+        if (remainingAmount <= 0) {
+            markAsPaidButton.disabled = true;
+            markAsPaidButton.textContent = 'Already Paid';
+        }
+    });
+
+    // Attach validation function to form
+    document.querySelector('.add-bill-container form').onsubmit = validateAddBillForm;
+
+    // Add event listeners for mark as paid buttons
+    document.querySelectorAll('.mark-as-paid-button').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            var form = this.closest('form');
+            var remainingAmount = parseFloat(form.querySelector('input[name="bill_index"]').closest('.bill').querySelector('.bill p:nth-of-type(2)').textContent.replace('Remaining: ₹', ''));
+
+            if (remainingAmount <= 0) {
+                event.preventDefault(); // Prevent form submission
+                alert('The bill is already fully paid.');
+            }
+        });
+    });
+
+
     </script>
 </body>
 
