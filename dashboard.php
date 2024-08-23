@@ -105,6 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_all_bills'])) {
 // Define items
 $items = [
     'chai' => 10,
+    'biryani' => 50,
     'cutting-chai' => 5,
     'samosa' => 10,
     'meetha_samosa' => 15,
